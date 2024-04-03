@@ -1,4 +1,3 @@
 aiohttp
-aiohttp-session
-cryptography
+aiohttp_session[secure]
 bcrypt
