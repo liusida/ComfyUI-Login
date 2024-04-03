@@ -1,2 +1,4 @@
+aiohttp
 aiohttp-session
+cryptography
 bcrypt
