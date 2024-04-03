@@ -8,6 +8,8 @@ Please be aware that absolute security does not exist. This login node offers on
 
 # How to use
 
+![Screenshot](screenshot.png)
+
 ## Installation
 To install this node, you have two options:
 
