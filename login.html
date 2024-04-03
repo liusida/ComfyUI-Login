@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ComfyUI Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="./lib/litegraph.css" />
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <link rel="stylesheet" type="text/css" href="./user.css" />
+</head>
+<body class="litegraph" style="text-align: center;">
+    <h2>ComfyUI Login</h2>
+    <div id="feedback" style="margin: 20px;"></div>
+    <form action="/login" method="post">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br><br>
+        <input type="submit" value="Submit" class="comfy-btn">
+        <br><br>
+        <a href="https://github.com/liusida/ComfyUI-Login/blob/main/locked_out.md" style="color:white; font-size:x-small" target="_blank">Locked Out?</a>
+    </form>
+</body>
+<script>
+    // Function to parse query parameters
+    function getQueryParams() {
+        var params = {};
+        window.location.search.substring(1).split("&").forEach(function(part) {
+            var item = part.split("=");
+            // Ensure both key and value are defined; replace '+' with ' ' (space) in value if defined
+            var key = decodeURIComponent(item[0]);
+            var value = item[1] ? decodeURIComponent(item[1].replace(/\+/g, ' ')) : null;
+            params[key] = value;
+        });
+        return params;
+    }
+    
+    var params = getQueryParams();
+    var feedbackElement = document.getElementById('feedback');
+    if (params.feedback) {
+        feedbackElement.innerText = params.feedback;
+    }
+</script>
+
+</html>
