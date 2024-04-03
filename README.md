@@ -29,3 +29,6 @@ To disable the login feature, you can either:
 1. Manually delete the ComfyUI-Login folder located in the `ComfyUI/custom_nodes/` directory. Then, restart ComfyUI for the changes to take effect.
 
 2. Use the [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager) to uninstall it. (Sorry, I haven't submitted to ComfyUI-Manager yet...)
+
+## HTTPS?
+No, there's no HTTPS still.
