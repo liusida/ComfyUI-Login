@@ -11,9 +11,9 @@ Please be aware that absolute security does not exist. This login node offers on
 ## Installation
 To install this node, you have two options:
 
-1. Use [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager).
+1. In the directory `ComfyUI/custom_nodes/`, git clone this repo.
 
-2. In the directory `ComfyUI/custom_nodes/`, git clone this repo.
+2. Use [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager). (Sorry, I haven't submitted to ComfyUI-Manager yet...)
 
 ## Setting Up a New Password
 For your first login, you may choose any password. This password will be encrypted and stored in a file named "PASSWORD" within the ComfyUI project folder.
@@ -24,6 +24,6 @@ If you forget your password, you can reset it by deleting the "PASSWORD" file fo
 ## Removing the Login Feature
 To disable the login feature, you can either:
 
-1. Use the [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager) to uninstall it, or
+1. Manually delete the ComfyUI-Login folder located in the `ComfyUI/custom_nodes/` directory. Then, restart ComfyUI for the changes to take effect.
 
-2. Manually delete the ComfyUI-Login folder located in the `ComfyUI/custom_nodes/` directory. Then, restart ComfyUI for the changes to take effect.
+2. Use the [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager) to uninstall it. (Sorry, I haven't submitted to ComfyUI-Manager yet...)
