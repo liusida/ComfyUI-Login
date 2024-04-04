@@ -13,7 +13,7 @@ Please be aware that absolute security does not exist. This login node offers on
 ## Installation
 To install this node, you have two options:
 
-1. In the directory `ComfyUI/custom_nodes/`, git clone this repo.
+1. In the directory `ComfyUI/custom_nodes/`, git clone this repo, and do `pip install -r requirements.txt` in the repo's directory.
 
 2. Use [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager). (Sorry, I haven't submitted to ComfyUI-Manager yet...)
 
