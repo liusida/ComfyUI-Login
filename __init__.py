@@ -7,17 +7,45 @@ import base64
 import os
 import folder_paths
 import bcrypt
+from datetime import datetime, timedelta
 
 node_dir = os.path.dirname(__file__)
 comfy_dir = os.path.dirname(folder_paths.__file__)
 password_path = os.path.join(comfy_dir, "PASSWORD")
+secret_key_path = os.path.join(node_dir,'.secret-key.txt')
+KEY_AGE_LIMIT = timedelta(days=30)  # Key expiration period
+
+def generate_key():
+    return base64.urlsafe_b64encode(os.urandom(32)).decode('utf-8')
+
+def write_key_to_file(key):
+    with open(secret_key_path, 'w') as file:
+        file.write(f"{key},{datetime.now().isoformat()}")
+
+def read_key_from_file():
+    try:
+        with open(secret_key_path, 'r') as file:
+            key, timestamp = file.read().split(',')
+            return key, datetime.fromisoformat(timestamp)
+    except FileNotFoundError:
+        return None, None
+
+def key_is_old(timestamp):
+    return datetime.now() - timestamp > KEY_AGE_LIMIT
+
+def get_or_refresh_key():
+    key, timestamp = read_key_from_file()
+    if key is None or timestamp is None or key_is_old(timestamp):
+        key = generate_key()
+        write_key_to_file(key)
+    return key
 
 # Access the PromptServer instance and its app
 prompt_server = server.PromptServer.instance
 app = prompt_server.app
 routes = prompt_server.routes
 
-secret_key = base64.urlsafe_b64decode(os.getenv('SECRET_KEY', base64.urlsafe_b64encode(os.urandom(32))))
+secret_key = get_or_refresh_key()
 setup(app, EncryptedCookieStorage(secret_key))
 
 @routes.get("/login")
