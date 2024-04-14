@@ -1,7 +1,5 @@
 # ComfyUI-Login
-This custom node serves as a proof-of-concept to explore the implementation of basic login functionality for [ComfyUI](https://github.com/comfyanonymous/ComfyUI).
-
-In the future, if proven useful, this feature might be directly integrated into either [ComfyUI](https://github.com/comfyanonymous/ComfyUI) or [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager).
+This custom node uses a simple password to protect ComfyUI.
 
 # First thing first
 Please be aware that absolute security does not exist. This login node offers only basic protection for ComfyUI. Use it at your own risk.
