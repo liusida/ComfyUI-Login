@@ -8,12 +8,14 @@ import os
 import folder_paths
 import bcrypt
 from datetime import datetime, timedelta
+import logging
 
 node_dir = os.path.dirname(__file__)
 comfy_dir = os.path.dirname(folder_paths.__file__)
 password_path = os.path.join(comfy_dir, "PASSWORD")
 secret_key_path = os.path.join(node_dir,'.secret-key.txt')
 KEY_AGE_LIMIT = timedelta(days=30)  # Key expiration period
+TOKEN = ""
 
 def generate_key():
     return base64.urlsafe_b64encode(os.urandom(32)).decode('utf-8')
@@ -89,6 +91,17 @@ async def get_root(request):
     response = web.HTTPFound('/login')  # Redirect to the main page if the password is correct
     return response
 
+def load_token():
+    global TOKEN
+    try:
+        with open(password_path, "r", encoding="utf-8") as f:
+            TOKEN = f.read()
+            logging.info(f"For direct API calls, use token={TOKEN}")
+    except FileNotFoundError as e:
+        logging.error("Please set up your password before use. The token will be a hashed string derived from your password.")
+        TOKEN = ""
+load_token()
+
 # For loading all custom js
 WEB_DIRECTORY = "js"
 
@@ -99,7 +112,9 @@ async def check_login_status(request: web.Request, handler):
         response = await handler(request)
         return response
     session = await get_session(request)
-    if ('logged_in' in session and session['logged_in']):
+    if TOKEN == "":
+        load_token()
+    if (request.query.get("token") == TOKEN) or ('logged_in' in session and session['logged_in']):
         response = await handler(request)
         if request.path == '/': # This avoids seeing the GUI after logging out and navigating back immediately.
             response.headers.setdefault('Cache-Control', 'no-cache')
