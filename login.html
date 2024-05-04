@@ -10,35 +10,30 @@
 </head>
 <body class="litegraph" style="text-align: center;">
     <h2>ComfyUI Login</h2>
-    <div id="feedback" style="margin: 20px;"></div>
+    <div id="feedback" style="margin: 20px;">
+        {% if feedback %}
+            <p>{{ feedback }}</p>
+        {% endif %}
+        {% if first_time %}
+            <p>Welcome!</p>
+            <p>For your first login, please enter a new username and password.</p>
+            <p>Your password will be securely saved for future access.</p>
+            <p>On subsequent visits, you can use this password to log in.</p>
+        {% endif %}
+    </div>
     <form action="/login" method="post">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
+        {% if first_time %}
+            <label>Username:</label><input type="text" name="username" placeholder="Enter username" required><br>
+        {% else %}
+            <p>Welcome back, {{ username }}!</p>
+        {% endif %}
+        <br>
+        <label>Password:</label><input type="password" name="password" placeholder="Enter password" required>
         <br><br>
-        <input type="submit" value="Submit" class="comfy-btn">
+        <input type="submit" value="Login" class="comfy-btn">
         <br><br>
         <a href="https://github.com/liusida/ComfyUI-Login/blob/main/locked_out.md" style="color:white; font-size:x-small" target="_blank">Locked Out?</a>
     </form>
 </body>
-<script>
-    // Function to parse query parameters
-    function getQueryParams() {
-        var params = {};
-        window.location.search.substring(1).split("&").forEach(function(part) {
-            var item = part.split("=");
-            // Ensure both key and value are defined; replace '+' with ' ' (space) in value if defined
-            var key = decodeURIComponent(item[0]);
-            var value = item[1] ? decodeURIComponent(item[1].replace(/\+/g, ' ')) : null;
-            params[key] = value;
-        });
-        return params;
-    }
-    
-    var params = getQueryParams();
-    var feedbackElement = document.getElementById('feedback');
-    if (params.feedback) {
-        feedbackElement.innerText = params.feedback;
-    }
-</script>
 
 </html>

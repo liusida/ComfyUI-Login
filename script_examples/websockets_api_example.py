@@ -13,6 +13,8 @@ client_id = str(uuid.uuid4())
 # It will appear like this:
 # For direct API calls, token=$2b$12$qUfJfV942nrMiX77QRVgIuDk1.oyXBP7FYrXVEBqouTk.uP/hiqAK
 TOKEN = "$2b$12$qUfJfV942nrMiX77QRVgIuDk1.oyXBP7FYrXVEBqouTk.uP/hiqAK"
+# If you get errors like: HTTP Error 400: Bad Request, please check the server's console for more detailed error message.
+# Sometimes it's related to the model file's filename.
 
 def queue_prompt(prompt):
     p = {"prompt": prompt, "client_id": client_id}
@@ -89,7 +91,7 @@ prompt_text = """
     "4": {
         "class_type": "CheckpointLoaderSimple",
         "inputs": {
-            "ckpt_name": "v1-5-pruned-emaonly.ckpt"
+            "ckpt_name": "v1-5-pruned-emaonly.safetensors"
         }
     },
     "5": {
