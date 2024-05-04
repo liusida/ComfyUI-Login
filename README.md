@@ -41,4 +41,4 @@ An example can be found in `./script_examples/websockets_api_example.py`.
 Feel free to modify `login.html` if you want to personalize your login page.
 
 ## HTTPS?
-No, there's no HTTPS still.
+Now ComfyUI officially supports HTTPS. Please check [How To Use TLS/SSL](https://github.com/comfyanonymous/ComfyUI?tab=readme-ov-file#how-to-use-tlsssl) section.
