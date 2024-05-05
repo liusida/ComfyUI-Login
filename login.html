@@ -11,8 +11,11 @@
 <body class="litegraph" style="text-align: center;">
     <h2>ComfyUI Login</h2>
     <div id="feedback" style="margin: 20px;">
-        {% if feedback %}
-            <p>{{ feedback }}</p>
+        {% if wrong_password %}
+            <p>Wrong Password.</p>
+        {% endif %}
+        {% if prompt_for_username %}
+            <p>Please also set a username.</p>
         {% endif %}
         {% if first_time %}
             <p>Welcome!</p>
@@ -22,7 +25,7 @@
         {% endif %}
     </div>
     <form action="/login" method="post">
-        {% if first_time %}
+        {% if first_time or prompt_for_username %}
             <label>Username:</label><input type="text" name="username" placeholder="Enter username" required><br>
         {% else %}
             <p>Welcome back, {{ username }}!</p>

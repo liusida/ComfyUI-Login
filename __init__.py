@@ -31,13 +31,16 @@ def get_user_data():
                 stored_data = f.read().split(b'\n')
                 password = stored_data[0]
                 user_cache['password'] = password
-                username = 'User'
-                if len(stored_data) > 1:
-                    # Assuming username is stored on the second line, password on the first
-                    username = stored_data[1].decode('utf-8')
-                    user_cache['username'] = username
+                if len(stored_data) > 1 and stored_data[1].strip():
+                    # Username exists in the second line
+                    username = stored_data[1].decode('utf-8').strip()
+                else:
+                    # No username present, use a placeholder and prompt for update
+                    username = None
+                user_cache['username'] = username
                 return username, password
         return None, None
+
 
 def generate_key():
     return base64.urlsafe_b64encode(os.urandom(32)).decode('utf-8')
@@ -75,7 +78,7 @@ setup(app, EncryptedCookieStorage(secret_key))
 @routes.get("/login")
 async def get_root(request):
     session = await get_session(request)
-    feedback = request.query.get('feedback', '')  # Get feedback from query parameters
+    wrong_password = request.query.get('wrong_password', '')
     if 'logged_in' in session and session['logged_in']:
         raise web.HTTPFound('/')
     else:
@@ -85,27 +88,39 @@ async def get_root(request):
         )
         template = env.get_template('login.html')
         first_time = not os.path.exists(password_path)
-        username = ''
-        if not first_time:
-            username, _ = get_user_data()
-        return web.Response(text=template.render(first_time=first_time, username=username, feedback=feedback), content_type='text/html')
+        username, _ = get_user_data() if not first_time else (None, None)
+        prompt_for_username = False
+
+        if username is None and not first_time:
+            # If there's no username but it's not the first time, prompt for username
+            prompt_for_username = True
+
+        return web.Response(text=template.render(first_time=first_time, username=username, wrong_password=wrong_password, prompt_for_username=prompt_for_username), content_type='text/html')
 
 @routes.post("/login")
 async def login_handler(request):
     data = await request.post()
     username_input = data.get('username')
     password_input = data.get('password').encode('utf-8')
-    feedback = ''
+
     if os.path.exists(password_path):
         # Existing user login attempt
         username_cached, password_cached = get_user_data()
-        if bcrypt.checkpw(password_input, password_cached):
+        if password_cached and bcrypt.checkpw(password_input, password_cached):
+            # Password is correct
             session = await get_session(request)
             session['logged_in'] = True
-            session['username'] = username_cached
-            return web.HTTPFound('/')
+            if username_cached:
+                session['username'] = username_cached
+            else:
+                # Username needs to be added because it does not exist
+                with open(password_path, "wb") as file:
+                    file.write(password_cached + b'\n' + username_input.encode('utf-8'))
+                user_cache['username'] = username_input
+                session['username'] = username_input
+            return web.HTTPFound('/')  # Redirect to the main page if the password is correct
         else:
-            feedback = 'Wrong password'
+            return web.HTTPFound('/login?wrong_password=1')
     else:
         # New user setup
         salt = bcrypt.gensalt()
@@ -117,7 +132,8 @@ async def login_handler(request):
         session = await get_session(request)
         session['logged_in'] = True
         session['username'] = username_input
-    return web.HTTPFound('/login?feedback=' + feedback)
+        return web.HTTPFound('/')
+    return web.HTTPFound('/login') # will not be reached
 
 @routes.get("/logout")
 async def get_root(request):
