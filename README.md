@@ -28,13 +28,21 @@ To disable the login feature, you can either:
 
 2. Use the [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager) to uninstall it. (Sorry, I haven't submitted to ComfyUI-Manager yet...)
 
-## Using REST API calls?
+## Using REST API Calls?
 
-ComfyUI-Login also protects the server from unauthorized API calls. Please add an additional argument `token` to your request to validate the call.
+ComfyUI-Login also protects the server from unauthorized API calls. 
 
-You'll find your token in your console (command line window) if you've set your password.
+You can find your token in your console (command line window) if you have set your password. It'll look like this:
 
-An example can be found in `./script_examples/websockets_api_example.py`.
+```
+For direct API calls, use token=$2b...
+```
+
+You have two options to validate your call:
+
+1. Add an additional argument `token`. An example can be found in `./script_examples/websockets_api_example.py`.
+
+2. Add an Authorization Bearer header. An example can be found in `./script_examples/free_memory.sh`
 
 ## Customizing the login page?
 

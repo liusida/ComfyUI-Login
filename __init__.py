@@ -157,20 +157,42 @@ load_token()
 # For loading all custom js
 WEB_DIRECTORY = "js"
 
+async def process_request(request, handler):
+    """Process the request by calling the handler and setting response headers."""
+    response = await handler(request)
+    if request.path == '/':  # Prevent caching the main page after logout
+        response.headers.setdefault('Cache-Control', 'no-cache')
+    return response
+
 @web.middleware
 async def check_login_status(request: web.Request, handler):
+    # Skip authentication for specific paths
     if request.path == '/login' or request.path.endswith('.css') or request.path.endswith('.js'):
-        # Skip for safe URIs
-        response = await handler(request)
-        return response
-    session = await get_session(request)
+        return await handler(request)
+
+    # Load the token if not already loaded
     if TOKEN == "":
         load_token()
-    if (request.query.get("token") == TOKEN) or ('logged_in' in session and session['logged_in']):
-        response = await handler(request)
-        if request.path == '/': # This avoids seeing the GUI after logging out and navigating back immediately.
-            response.headers.setdefault('Cache-Control', 'no-cache')
-        return response
+
+    # Get the session and check if logged in
+    session = await get_session(request)
+    if 'logged_in' in session and session['logged_in']:
+        # User is logged in via session, proceed without checking tokens
+        return await process_request(request, handler)
+
+    # Check the Authorization header for Bearer token
+    authorization_header = request.headers.get("Authorization")
+    if authorization_header:
+        auth_type, token_from_header = authorization_header.split()
+        if auth_type == 'Bearer' and token_from_header == TOKEN:
+            # Bearer token is valid, proceed without checking query token
+            return await process_request(request, handler)
+
+    # Fallback to check the token in the query
+    if request.query.get("token") == TOKEN:
+        return await process_request(request, handler)
+
+    # Redirect to login if not authorized
     raise web.HTTPFound('/login')
 
 app.middlewares.append(check_login_status)
