@@ -13,7 +13,7 @@ import logging
 
 node_dir = os.path.dirname(__file__)
 comfy_dir = os.path.dirname(folder_paths.__file__)
-password_path = os.path.join(comfy_dir, "PASSWORD")
+password_path = os.path.join(comfy_dir, "login_node", "PASSWORD")
 secret_key_path = os.path.join(node_dir,'.secret-key.txt')
 login_html_path = os.path.join(node_dir, "login.html")
 KEY_AGE_LIMIT = timedelta(days=30)  # Key expiration period
@@ -152,6 +152,11 @@ def load_token():
     except FileNotFoundError as e:
         logging.error("Please set up your password before use. The token will be a hashed string derived from your password.")
         TOKEN = ""
+
+if not os.path.exists(os.path.dirname(password_path)):
+    logging.info("Password directory does not exists, creating...")
+    os.makedirs(os.path.dirname(password_path))
+
 load_token()
 
 # For loading all custom js
