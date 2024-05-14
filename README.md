@@ -18,17 +18,16 @@ To install this node, you have two options:
 1. In the directory `ComfyUI/custom_nodes/`, git clone this repo, and do `pip install -r
    requirements.txt` in the repo's directory.
 
-2. Use [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager). (Sorry, I haven't
-   submitted to ComfyUI-Manager yet...)
+2. Use [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager).
 
 ## Setting Up a New Password
 
 For your first login, you may choose any password. This password will be encrypted and
-stored in a file named "PASSWORD" within the `<ComfyUI project folder>/login` folder.
+stored in a file named `PASSWORD` within the `<ComfyUI project folder>/login` folder.
 
 ## Resetting a Forgotten Password
 
-If you forget your password, you can reset it by deleting the "PASSWORD" file found in
+If you forget your password, you can reset it by deleting the `PASSWORD` file found in
 the `<ComfyUI project folder>/login` folder. After doing this, you will be able to log
 in again using a new password of your choice.
 
@@ -40,7 +39,7 @@ To disable the login feature, you can either:
    directory. Then, restart ComfyUI for the changes to take effect.
 
 2. Use the [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager) to uninstall
-   it. (Sorry, I haven't submitted to ComfyUI-Manager yet...)
+   it.
 
 ## Using REST API Calls?
 

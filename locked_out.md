@@ -3,11 +3,11 @@
 ## Setting Up a New Password
 
 For your first login, you may choose any password. This password will be encrypted and
-stored in a file named "PASSWORD" within the ComfyUI project folder.
+stored in a file named `PASSWORD` within the ComfyUI project folder.
 
 ## Resetting a Forgotten Password
 
-If you forget your password, you can reset it by deleting the "PASSWORD" file found in
+If you forget your password, you can reset it by deleting the `PASSWORD` file found in
 `<ComfyUI project folder>/login`. After doing this, you will be able to log in again using a
 new password of your choice.
 
