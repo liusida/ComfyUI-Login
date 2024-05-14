@@ -85,7 +85,7 @@ class LoadImageWithPrivacy:
 
         return True
 
-class RemoveImage:
+class RemoveImageForPrivacy:
     @classmethod
     def INPUT_TYPES(s):
         return {

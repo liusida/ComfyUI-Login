@@ -64,9 +64,26 @@ You have two options to validate your call:
 
 Feel free to modify `login.html` if you want to personalize your login page.
 
-## HTTPS?
+# Upload Privacy Nodes
 
-Now ComfyUI officially supports self-signed SSL certificates (though Chrome might
-display a warning for them). Please check [How To Use
-TLS/SSL](https://github.com/comfyanonymous/ComfyUI?tab=readme-ov-file#how-to-use-tlsssl)
-section.
+This package now contains two nodes that contribute to privacy.
+
+When using ComfyUI's API to serve customers, people often ask if the uploaded pictures will be destroyed after processing. The answer was no, and it's not easy, because there's no "remove image" node for security considerations.
+
+Now we have two nodes for this:
+
+![Load Image with Privacy and Remove Image for Privacy node](upload_privacy.png)
+
+1. Load Image with Privacy
+
+This node not only loads an image, but also returns the path of the image and a calculated signature for the path.
+
+2. Remove Image for Privacy
+
+This node will remove the image if the signature for the path of the image is correct.
+
+## Before Using the Nodes
+
+Please set the `REMOVE_IMAGE_SECRET` in `upload_privacy.py`, so that your signature will be unique and secure.
+
+These two nodes are mainly for API use, because I assume that people don't need to remove any images in the GUI. But who knows.

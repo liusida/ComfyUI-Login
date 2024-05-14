@@ -3,10 +3,10 @@ from .password import *
 
 NODE_CLASS_MAPPINGS = {
     "LoadImageWithPrivacy": LoadImageWithPrivacy,
-    "RemoveImage": RemoveImage,
+    "RemoveImageForPrivacy": RemoveImageForPrivacy,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "LoadImageWithPrivacy": "Load Image With Privacy",
-    "RemoveImage": "Remove Image",
+    "LoadImageWithPrivacy": "Load Image with Privacy",
+    "RemoveImageForPrivacy": "Remove Image for Privacy",
 }
