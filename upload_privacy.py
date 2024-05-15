@@ -67,7 +67,8 @@ class LoadImageWithPrivacy:
 
         signature = hmac.new(REMOVE_IMAGE_SECRET.encode('utf-8'), msg=image_path.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
 
-        img.close()     # so the image file can be removed in later nodes.
+        del img
+
         return (output_image, output_mask, image_path, signature)
 
     @classmethod
