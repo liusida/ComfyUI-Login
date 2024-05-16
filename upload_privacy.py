@@ -1,20 +1,34 @@
-import hashlib
 import torch
 import folder_paths
 import os
 import node_helpers
 from PIL import Image, ImageOps, ImageSequence, ImageFile
 import numpy as np
-import hmac
 import logging
 import io
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from nodes import LoadImage
 
-REMOVE_IMAGE_SECRET = "For_privacy!Arbitrary_secret_phrase_here."
+def word_array_to_bytes(word_array):
+    words = word_array['words']
+    sig_bytes = word_array['sigBytes']
+    byte_array = bytearray()
+    
+    for i in range(sig_bytes):
+        byte = (words[i // 4] >> (24 - (i % 4) * 8)) & 0xFF
+        byte_array.append(byte)
+    
+    return bytes(byte_array)
 
-class LoadImageWithPrivacy(LoadImage):
+def decrypt_image_data(encrypted_data, key_word_array, iv_word_array):
+    key = word_array_to_bytes(key_word_array)
+    iv = word_array_to_bytes(iv_word_array)
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+    decrypted_data = unpad(cipher.decrypt(encrypted_data), AES.block_size)
+    return decrypted_data
+
+class LoadImageWithPrivacy:
     @classmethod
     def INPUT_TYPES(cls):
         input_dir = folder_paths.get_input_directory()
@@ -29,7 +43,7 @@ class LoadImageWithPrivacy(LoadImage):
         }
 
     CATEGORY = "image"
-    RETURN_TYPES = ("IMAGE", "MASK", "IMAGE_PATH", "SIGNATURE")
+    RETURN_TYPES = ("IMAGE", "MASK")
     FUNCTION = "load_image"
 
     def load_image(self, image, extra_pnginfo):
@@ -47,6 +61,10 @@ class LoadImageWithPrivacy(LoadImage):
             decrypted_data = decrypt_image_data(encrypted_data, key_word_array, iv_word_array)
         except ValueError as e:
             raise ValueError(f"Sorry, you don't have the correct key for this encrypted file: {str(e)}.")
+
+        # Remove the file if it is decrypted correctly
+        os.remove(image_path)
+        logging.info(f"{image_path} removed.")
 
         # Convert decrypted data to an image
         img = Image.open(io.BytesIO(decrypted_data))
@@ -88,59 +106,10 @@ class LoadImageWithPrivacy(LoadImage):
             output_image = output_images[0]
             output_mask = output_masks[0]
 
-        signature = hmac.new(REMOVE_IMAGE_SECRET.encode('utf-8'), msg=image_path.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
-
         del img
 
-        return (output_image, output_mask, image_path, signature)
+        return (output_image, output_mask)
     
     @classmethod
     def VALIDATE_INPUTS(s, image):
-        #TODO: Why the second pass in ComfyUI GUI will cause this error? Shouldn't the image be cached?
-        if not folder_paths.exists_annotated_filepath(image):
-            return "Invalid image file or file doesn't exist: {}".format(image)
-
         return True
-
-class RemoveImageForPrivacy:
-    @classmethod
-    def INPUT_TYPES(s):
-        return {
-            "required": {
-                "image_path": ("IMAGE_PATH", {"forceInput": True}),
-                "signature": ("SIGNATURE", {"forceInput": True}),
-            }
-        }
-    
-    CATEGORY = "image"
-    OUTPUT_NODE = True
-
-    RETURN_TYPES = ()
-    FUNCTION = "remove_image"
-    def remove_image(self, image_path, signature):
-        calculated_signature = hmac.new(REMOVE_IMAGE_SECRET.encode('utf-8'), msg=image_path.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
-        if hmac.compare_digest(calculated_signature, signature):
-            os.remove(image_path)
-            logging.info(f"{image_path} removed.")
-            #TODO: Is there a way to refresh the "Load Image With Privacy" node via js? I am not familiar with js.
-            
-        return {}
-
-def word_array_to_bytes(word_array):
-    words = word_array['words']
-    sig_bytes = word_array['sigBytes']
-    byte_array = bytearray()
-    
-    for i in range(sig_bytes):
-        byte = (words[i // 4] >> (24 - (i % 4) * 8)) & 0xFF
-        byte_array.append(byte)
-    
-    return bytes(byte_array)
-
-def decrypt_image_data(encrypted_data, key_word_array, iv_word_array):
-    key = word_array_to_bytes(key_word_array)
-    iv = word_array_to_bytes(iv_word_array)
-    cipher = AES.new(key, AES.MODE_CBC, iv)
-    decrypted_data = unpad(cipher.decrypt(encrypted_data), AES.block_size)
-    return decrypted_data
-
