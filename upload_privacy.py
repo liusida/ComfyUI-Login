@@ -96,6 +96,7 @@ class LoadImageWithPrivacy(LoadImage):
     
     @classmethod
     def VALIDATE_INPUTS(s, image):
+        #TODO: Why the second pass in ComfyUI GUI will cause this error? Shouldn't the image be cached?
         if not folder_paths.exists_annotated_filepath(image):
             return "Invalid image file or file doesn't exist: {}".format(image)
 
