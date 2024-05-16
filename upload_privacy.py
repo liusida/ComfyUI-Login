@@ -31,10 +31,13 @@ def decrypt_image_data(encrypted_data, key_word_array, iv_word_array):
 class LoadImageIncognito:
     @classmethod
     def INPUT_TYPES(cls):
+
         base_input_dir = folder_paths.get_input_directory()
         incognito_dir = os.path.join(base_input_dir, 'incognito')
-
+        if not os.path.exists(incognito_dir):
+            os.makedirs(incognito_dir)
         files = [os.path.join('incognito', f) for f in os.listdir(incognito_dir) if os.path.isfile(os.path.join(incognito_dir, f))]
+
         return {
             "required": {
                 "image": (files, {"image_upload_encrypted": True}),
