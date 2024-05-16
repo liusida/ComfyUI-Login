@@ -38,7 +38,7 @@ class LoadImageIncognito:
         return {
             "required": {
                 "image": (files, {"image_upload_encrypted": True}),
-                "remove_image_file": ("BOOLEAN", {"default": True}),
+                "auto_delete": ("BOOLEAN", {"default": True}),
             },
             "hidden": {
                 "extra_pnginfo": "EXTRA_PNGINFO"
@@ -49,7 +49,7 @@ class LoadImageIncognito:
     RETURN_TYPES = ("IMAGE", "MASK")
     FUNCTION = "load_image"
 
-    def load_image(self, image, remove_image_file, extra_pnginfo):
+    def load_image(self, image, auto_delete, extra_pnginfo):
         key_word_array, iv_word_array = extra_pnginfo['secret_for_private_image']
         
         # Get the image path
@@ -65,7 +65,7 @@ class LoadImageIncognito:
         except ValueError as e:
             raise ValueError(f"Sorry, you don't have the correct key for this encrypted file: {str(e)}.")
 
-        if remove_image_file:
+        if auto_delete:
             # Remove the file if it is decrypted correctly
             os.remove(image_path)
             logging.info(f"{image_path} removed.")
