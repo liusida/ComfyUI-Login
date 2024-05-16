@@ -2,3 +2,4 @@ aiohttp
 aiohttp_session[secure]
 Jinja2
 bcrypt
+pycryptodome

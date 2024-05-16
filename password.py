@@ -165,9 +165,6 @@ if os.path.exists(old_password_path):
 
 load_token()
 
-# For loading all custom js
-WEB_DIRECTORY = "js"
-
 async def process_request(request, handler):
     """Process the request by calling the handler and setting response headers."""
     response = await handler(request)
