@@ -74,7 +74,7 @@ class LoadImageIncognito:
             logging.info(f"{image_path} removed.")
 
         # Convert decrypted data to an image
-        img = Image.open(io.BytesIO(decrypted_data))
+        img = node_helpers.pillow(Image.open, io.BytesIO(decrypted_data)) 
         
         output_images = []
         output_masks = []
