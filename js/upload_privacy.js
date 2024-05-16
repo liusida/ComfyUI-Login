@@ -28,7 +28,7 @@ const cryptoJsLoaded = loadScript("https://cdnjs.cloudflare.com/ajax/libs/crypto
 
 // Function to generate a random filename
 function generateRandomFilename(extension) {
-    const array = new Uint8Array(16);
+    const array = new Uint8Array(3);
     crypto.getRandomValues(array);
     const randomString = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
     return `${randomString}.${extension}`;
@@ -144,8 +144,8 @@ ComfyWidgets.IMAGEUPLOAD_ENCRYPTED = (node, inputName, inputData, app) => {
             const randomFilename = generateRandomFilename(extension);
 
             const body = new FormData();
-            body.append("image", encryptedFile, randomFilename); // Preserve the original file name
-            if (pasted) body.append("subfolder", "pasted");
+            body.append("image", encryptedFile, randomFilename);
+            body.append("subfolder", "incognito");
     
             // Upload the encrypted file
             const resp = await api.fetchApi("/upload/image", {
@@ -217,11 +217,11 @@ ComfyWidgets.IMAGEUPLOAD_ENCRYPTED = (node, inputName, inputData, app) => {
     // On load if we have a value then render the image
     // The value isnt set immediately so we need to wait a moment
     // No change callbacks seem to be fired on initial setting of the value
-    requestAnimationFrame(() => {
-        if (imageWidget.value) {
-            showImage(imageWidget.value);
-        }
-    });
+    // requestAnimationFrame(() => {
+    //     if (imageWidget.value) {
+    //         showImage(imageWidget.value);
+    //     }
+    // });
 
     const fileInput = document.createElement("input");
     Object.assign(fileInput, {

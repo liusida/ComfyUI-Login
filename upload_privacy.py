@@ -28,14 +28,17 @@ def decrypt_image_data(encrypted_data, key_word_array, iv_word_array):
     decrypted_data = unpad(cipher.decrypt(encrypted_data), AES.block_size)
     return decrypted_data
 
-class LoadImageWithPrivacy:
+class LoadImageIncognito:
     @classmethod
     def INPUT_TYPES(cls):
-        input_dir = folder_paths.get_input_directory()
-        files = [f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f))]
+        base_input_dir = folder_paths.get_input_directory()
+        incognito_dir = os.path.join(base_input_dir, 'incognito')
+
+        files = [os.path.join('incognito', f) for f in os.listdir(incognito_dir) if os.path.isfile(os.path.join(incognito_dir, f))]
         return {
             "required": {
-                "image": (sorted(files), {"image_upload_encrypted": True}),
+                "image": (files, {"image_upload_encrypted": True}),
+                "remove_image_file": ("BOOLEAN", {"default": True}),
             },
             "hidden": {
                 "extra_pnginfo": "EXTRA_PNGINFO"
@@ -46,7 +49,7 @@ class LoadImageWithPrivacy:
     RETURN_TYPES = ("IMAGE", "MASK")
     FUNCTION = "load_image"
 
-    def load_image(self, image, extra_pnginfo):
+    def load_image(self, image, remove_image_file, extra_pnginfo):
         key_word_array, iv_word_array = extra_pnginfo['secret_for_private_image']
         
         # Get the image path
@@ -62,9 +65,10 @@ class LoadImageWithPrivacy:
         except ValueError as e:
             raise ValueError(f"Sorry, you don't have the correct key for this encrypted file: {str(e)}.")
 
-        # Remove the file if it is decrypted correctly
-        os.remove(image_path)
-        logging.info(f"{image_path} removed.")
+        if remove_image_file:
+            # Remove the file if it is decrypted correctly
+            os.remove(image_path)
+            logging.info(f"{image_path} removed.")
 
         # Convert decrypted data to an image
         img = Image.open(io.BytesIO(decrypted_data))

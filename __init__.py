@@ -5,9 +5,9 @@ from .password import *
 WEB_DIRECTORY = "js"
 
 NODE_CLASS_MAPPINGS = {
-    "LoadImageWithPrivacy": LoadImageWithPrivacy,
+    "LoadImageIncognito": LoadImageIncognito,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "LoadImageWithPrivacy": "Load Image with Privacy",
+    "LoadImageIncognito": "Load Image Incognito",
 }
