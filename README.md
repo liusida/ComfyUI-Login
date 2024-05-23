@@ -9,7 +9,7 @@ protection for ComfyUI. Use it at your own risk.
 
 ## How to use
 
-![Screenshot](screenshot.png)
+![Screenshot](images/screenshot.png)
 
 ## Installation
 
@@ -64,26 +64,18 @@ You have two options to validate your call:
 
 Feel free to modify `login.html` if you want to personalize your login page.
 
-# Upload Privacy Nodes
+# Upload Image Incognito
 
-This package now contains two nodes that contribute to privacy.
+This package now contains a node that contribute to privacy.
 
-When using ComfyUI's API to serve customers, people often ask if the uploaded pictures will be destroyed after processing. The answer was no, and it's not easy, because there's no "remove image" node for security considerations.
+![Upload Image Incognito node](images/Upload_Image_Incognito.png)
 
-Now we have two nodes for this:
+The image will be encrypted and uploaded to the server. The key for decryption is generated randomly each time and will never be saved on disk or on the server.
 
-![Load Image with Privacy and Remove Image for Privacy node](upload_privacy.png)
+The image will be automatically deleted by default.
 
-1. Load Image with Privacy
+# Free Memory When Leaving
 
-This node not only loads an image, but also returns the path of the image and a calculated signature for the path.
+The browser will send a `/free` POST request to the server when the user is leaving, logging out, or refreshing the page.
 
-2. Remove Image for Privacy
-
-This node will remove the image if the signature for the path of the image is correct.
-
-## Before Using the Nodes
-
-Please set the `REMOVE_IMAGE_SECRET` in `upload_privacy.py`, so that your signature will be unique and secure.
-
-These two nodes are mainly for API use, because I assume that people don't need to remove any images in the GUI. But who knows.
+This is handled purely in JavaScript. If you prefer not to use this feature, simply delete the file `js/free_memory.js`.
