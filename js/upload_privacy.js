@@ -46,6 +46,9 @@ app.registerExtension({
 
 ComfyWidgets.IMAGEUPLOAD_ENCRYPTED = (node, inputName, inputData, app) => {
     const imageWidget = node.widgets.find((w) => w.name === (inputData[1]?.widget ?? "image"));
+    
+    imageWidget.disabled = true;
+
     let uploadWidget;
 
     const url_lock_icon = "/extensions/ComfyUI-Login/lock_icon.png";
