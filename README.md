@@ -74,6 +74,8 @@ The image will be encrypted and uploaded to the server. The key for decryption i
 
 The image will be automatically deleted by default.
 
+Unlike the default "Load Image" node, where the image is read from disk every time, this node keeps the image in cache and deletes the physical file as soon as the first prompt runs.
+
 # Free Memory When Leaving
 
 The browser will send a `/free` POST request to the server when the user is leaving, logging out, or refreshing the page.
