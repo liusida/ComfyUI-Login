@@ -1,4 +1,5 @@
 import server
+from comfy.cli_args import args
 import aiohttp
 from aiohttp_session import setup, get_session
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
@@ -189,16 +190,17 @@ async def check_login_status(request: web.Request, handler):
         return await process_request(request, handler)
 
     # Check the Authorization header for Bearer token
-    authorization_header = request.headers.get("Authorization")
-    if authorization_header:
-        auth_type, token_from_header = authorization_header.split()
-        if auth_type == 'Bearer' and token_from_header == TOKEN:
-            # Bearer token is valid, proceed without checking query token
-            return await process_request(request, handler)
+    if args.enable_cors_header is None or args.enable_cors_header == request.headers.get('Origin'):
+        authorization_header = request.headers.get("Authorization")
+        if authorization_header:
+            auth_type, token_from_header = authorization_header.split()
+            if auth_type == 'Bearer' and token_from_header == TOKEN:
+                # Bearer token is valid, proceed without checking query token
+                return await process_request(request, handler)
 
-    # Fallback to check the token in the query
-    if request.query.get("token") == TOKEN:
-        return await process_request(request, handler)
+        # Fallback to check the token in the query
+        if request.query.get("token") == TOKEN:
+            return await process_request(request, handler)
 
     # Redirect to login if not authorized
     raise web.HTTPFound('/login')
