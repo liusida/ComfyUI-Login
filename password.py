@@ -190,7 +190,7 @@ async def check_login_status(request: web.Request, handler):
         return await process_request(request, handler)
 
     # Check the Authorization header for Bearer token
-    if args.enable_cors_header is None or args.enable_cors_header == request.headers.get('Origin'):
+    if args.enable_cors_header is None or args.enable_cors_header == '*' or args.enable_cors_header == request.headers.get('Origin'):
         authorization_header = request.headers.get("Authorization")
         if authorization_header:
             auth_type, token_from_header = authorization_header.split()
