@@ -53,8 +53,6 @@ class LoadImageIncognito:
     FUNCTION = "load_image"
 
     def load_image(self, image, auto_delete, extra_pnginfo):
-        key_word_array, iv_word_array = extra_pnginfo['secret_for_private_image']
-        
         # Get the image path
         image_path = folder_paths.get_annotated_filepath(image)
 
@@ -64,7 +62,12 @@ class LoadImageIncognito:
 
         # Decrypt the data
         try:
-            decrypted_data = decrypt_image_data(encrypted_data, key_word_array, iv_word_array)
+            if extra_pnginfo:
+                key_word_array, iv_word_array = extra_pnginfo['secret_for_private_image']
+                decrypted_data = decrypt_image_data(encrypted_data, key_word_array, iv_word_array)
+            else:
+                logging.warn("No extra_pnginfo. Falling back to unencrypted image.")
+                decrypted_data = encrypted_data
         except ValueError as e:
             raise ValueError(f"Sorry, you don't have the correct key for this encrypted file: {str(e)}.")
 
