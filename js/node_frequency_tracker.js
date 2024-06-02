@@ -145,8 +145,8 @@ LGraphCanvas.prototype.showConnectionMenu = function (optPass) { // addNodeMenu 
 
 function generateNodeKey(node) {
     let type = node.type;
-    let inputs = node.inputs ? node.inputs.map(input => input.type).join(",") : "";
-    let outputs = node.outputs ? node.outputs.map(output => output.type).join(",") : "";
+    let inputs = node.inputs ? node.inputs.map(input => `[${input.type}]`).join(",") : "";
+    let outputs = node.outputs ? node.outputs.map(output => `[${output.type}]`).join(",") : "";
     return `${type}|${inputs}|${outputs}`;
 }
 
@@ -156,7 +156,7 @@ function findTopFrequentNodes(isFrom, fromSlotType, topN = 3) {
 
     for (let key in selectionFrequency) {
         let [type, inputs, outputs] = key.split("|");
-        if (isFrom ? inputs.includes(fromSlotType) : outputs.includes(fromSlotType)) {
+        if (isFrom ? inputs.includes(`[${fromSlotType}]`) : outputs.includes(`[${fromSlotType}]`)) {
             candidates.push({ type: type, frequency: selectionFrequency[key] });
         }
     }
