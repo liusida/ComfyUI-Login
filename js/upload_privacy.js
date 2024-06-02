@@ -17,13 +17,10 @@ function loadScript(url, callback) {
 }
 
 const cryptoJsLoaded = loadScript("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.js").then(() => {
-    console.log("a");
-    console.log(CryptoJS);
     // Generate a random 32-byte key for AES-256
     globalKey = CryptoJS.lib.WordArray.random(32); // 32 bytes = 256 bits
     // Generate a random 16-byte IV
     globalIv = CryptoJS.lib.WordArray.random(16); // 16 bytes = 128 bits
-    console.log("OK");
 });
 
 // Function to generate a random filename
