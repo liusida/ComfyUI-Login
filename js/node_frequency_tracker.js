@@ -8,23 +8,17 @@ const originalAdd = LGraph.prototype.add;
 
 LGraph.prototype.add = function (node, skip_compute_order) {
     originalAdd.apply(this, arguments);
+    if (!skip_compute_order) {
+        // Everytime created a node, update the frequency
+        var selectionFrequency = JSON.parse(localStorage.getItem("nodeSelectionFrequency") || "{}");
+        let key = generateNodeKey(node);
 
-    // Everytime created a node, update the frequency
-    function generateNodeKey(node) {
-        let type = node.type;
-        let inputs = node.inputs ? node.inputs.map(input => input.type).join(",") : "";
-        let outputs = node.outputs ? node.outputs.map(output => output.type).join(",") : "";
-        return `${type}|${inputs}|${outputs}`;
+        if (!selectionFrequency[key]) {
+            selectionFrequency[key] = 0;
+        }
+        selectionFrequency[key] += 1;
+        localStorage.setItem("nodeSelectionFrequency", JSON.stringify(selectionFrequency));
     }
-
-    var selectionFrequency = JSON.parse(localStorage.getItem("nodeSelectionFrequency") || "{}");
-    let key = generateNodeKey(node);
-
-    if (!selectionFrequency[key]) {
-        selectionFrequency[key] = 0;
-    }
-    selectionFrequency[key] += 1;
-    localStorage.setItem("nodeSelectionFrequency", JSON.stringify(selectionFrequency));
 };
 
 //From: https://github.com/jagenjo/litegraph.js/blob/0555a2f2a3df5d4657593c6d45eb192359888195/src/litegraph.js#L11182
@@ -149,6 +143,13 @@ LGraphCanvas.prototype.showConnectionMenu = function (optPass) { // addNodeMenu 
     return false;
 };
 
+function generateNodeKey(node) {
+    let type = node.type;
+    let inputs = node.inputs ? node.inputs.map(input => input.type).join(",") : "";
+    let outputs = node.outputs ? node.outputs.map(output => output.type).join(",") : "";
+    return `${type}|${inputs}|${outputs}`;
+}
+
 function findTopFrequentNodes(isFrom, fromSlotType, topN = 3) {
     var selectionFrequency = JSON.parse(localStorage.getItem("nodeSelectionFrequency") || "{}");
     let candidates = [];
@@ -165,6 +166,6 @@ function findTopFrequentNodes(isFrom, fromSlotType, topN = 3) {
 
     // Return the types of the top N candidates
     return candidates.slice(0, topN).map(c => c.type);
-}        
+}
 
 // To reset the tracker, use localStorage.removeItem('nodeSelectionFrequency');
