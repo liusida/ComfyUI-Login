@@ -1,3 +1,7 @@
+//
+// This file is here for my own conveniency, like a pre-print, later would be sumit to a proper repository.
+// Don't want this functionality? simple delete this file
+//
 import { app } from "../../scripts/app.js";
 
 // hack: unregister the original Comfy.SlotDefaults
