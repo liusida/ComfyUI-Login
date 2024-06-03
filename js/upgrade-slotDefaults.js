@@ -27,7 +27,10 @@ app.registerExtension({
 			defaultValue: 5,
 		});
 		var that = this;
-		LGraph.prototype.onNodeAdded = function (node) {
+		
+		const onNodeAdded = app.graph.onNodeAdded;
+		app.graph.onNodeAdded = function (node) {
+			onNodeAdded?.apply?.(this, arguments);
 			//TODO: The default "middle button click to add the first option in default list" conflicts with ComfyUI-Custom-Scripts's "🐍 Middle click slot to add"
 			if (this._nodes_in_order.length == 0) {
 				// Hack: it's a refresh, creating nodes as initialization, not actually adding any nodes manually. For more details: https://github.com/jagenjo/litegraph.js/issues/482#issuecomment-2144323089
