@@ -3,6 +3,7 @@
 // Don't want this functionality? simple delete this file
 //
 import { app } from "../../scripts/app.js";
+import { ComfyWidgets } from "../../scripts/widgets.js";
 
 // hack: unregister the original Comfy.SlotDefaults
 app.extensions = app.extensions.filter(item => item.name !== 'Comfy.SlotDefaults');
