@@ -4,39 +4,67 @@
     <meta charset="UTF-8">
     <title>ComfyUI Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" type="text/css" href="./lib/litegraph.css" />
     <link rel="stylesheet" type="text/css" href="./style.css" />
-    <link rel="stylesheet" type="text/css" href="./user.css" />
+    <style>
+        body {text-align: center;}
+        .comfy-modal { display: block; }
+        .comfy-modal-content { width: 100%; height: 100%; }
+        .comfy-modal p { color: white; text-align: left; }
+        .comfy-modal .minor { font-style: italic; font-size: 13px; color: #777; }
+        .comfy-modal label { color: white; padding: 5px; }
+        .comfy-modal .title {background-color: black; font-size: 22px; color: white; padding: 5px;}
+        #feedback { margin: 20px 10px; padding: 10px; border: 1px solid #666; background-color: #222; border-radius: 10px;}
+    </style>
 </head>
-<body class="litegraph" style="text-align: center;">
-    <h2>ComfyUI Login</h2>
-    <div id="feedback" style="margin: 20px;">
-        {% if wrong_password %}
-            <p>Wrong Password.</p>
-        {% endif %}
-        {% if prompt_for_username %}
-            <p>Please also set a username.</p>
-        {% endif %}
-        {% if first_time %}
-            <p>Welcome!</p>
-            <p>For your first login, please enter a new username and password.</p>
-            <p>Your password will be securely saved for future access.</p>
-            <p>On subsequent visits, you can use this password to log in.</p>
-        {% endif %}
+<body>
+
+    <div class="comfy-modal">
+        <div class="comfy-modal-content">
+            <div class="title">ComfyUI Login</div>
+        </div>
+
+        <div id="feedback">
+            {% if wrong_password %}
+                <p>Wrong Password.</p>
+            {% endif %}
+            {% if prompt_for_username %}
+                <p>Please also set a username.</p>
+            {% endif %}
+            {% if first_time %}
+                <p>⚡ Welcome!</p>
+                <p>For your first login, please enter a new username and password.</p>
+                <p class="minor">Your password will be securely saved for future access.</p>
+                <p class="minor">On subsequent visits, you can use this password to log in.</p>
+            {% else %}
+                <p>🌈 Welcome back, {{ username }}!</p>
+            {% endif %}
+        </div>
+        <div>
+            <form action="/login" method="post">
+                {% if first_time or prompt_for_username %}
+                    <label>😸 Username:</label><input type="text" id="username" name="username" placeholder="Enter username" required><br>
+                {% endif %}
+                <br>
+                <label>🗝️ Password:</label><input type="password" id="password" name="password" placeholder="Enter password" required>
+                <br><br>
+                <input type="submit" value="Login" class="comfy-btn">
+                <br><br>
+                <a href="https://github.com/liusida/ComfyUI-Login/blob/main/locked_out.md" style="color:white; font-size:x-small" target="_blank">Locked Out?</a>
+            </form>
+        </div>
     </div>
-    <form action="/login" method="post">
-        {% if first_time or prompt_for_username %}
-            <label>Username:</label><input type="text" name="username" placeholder="Enter username" required><br>
-        {% else %}
-            <p>Welcome back, {{ username }}!</p>
-        {% endif %}
-        <br>
-        <label>Password:</label><input type="password" name="password" placeholder="Enter password" required>
-        <br><br>
-        <input type="submit" value="Login" class="comfy-btn">
-        <br><br>
-        <a href="https://github.com/liusida/ComfyUI-Login/blob/main/locked_out.md" style="color:white; font-size:x-small" target="_blank">Locked Out?</a>
-    </form>
+    <script>
+        window.onload = function() {
+            var usernameInput = document.getElementById('username');
+            if (usernameInput) {
+                usernameInput.focus();
+            } else {
+                document.getElementById('password').focus();
+            }
+        };
+    </script>
+
+    
 </body>
 
 </html>
