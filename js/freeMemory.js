@@ -5,10 +5,8 @@
 //
 import { app } from "/scripts/app.js";
 
-const nodeName = "ComfyUI-Login";
-
 app.registerExtension({
-  name: nodeName,
+  name: "Comfy.Login.FreeMemory",
   async init(app) {
     window.addEventListener('beforeunload', () => {
       navigator.sendBeacon("/free", JSON.stringify({ unload_models: true, free_memory: true }));

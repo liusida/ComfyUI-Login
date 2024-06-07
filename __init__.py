@@ -1,4 +1,4 @@
-from .upload_privacy import *
+from .load_image_incognito import *
 from .password import *
 
 # For loading all custom js

@@ -33,7 +33,7 @@ function generateRandomFilename(extension) {
 
 // Adds an upload button to the nodes
 app.registerExtension({
-	name: "Comfy.UploadImageEncrypted",
+	name: "Comfy.Login.LoadImageIncognito",
 	async beforeRegisterNodeDef(nodeType, nodeData, app) {
         if (nodeData?.input?.required?.image?.[1]?.image_upload_encrypted === true) {
 			nodeData.input.required.upload = ["IMAGEUPLOAD_ENCRYPTED"];
