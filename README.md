@@ -9,7 +9,15 @@ protection for ComfyUI. Use it at your own risk.
 
 ## How to use
 
-![Screenshot](images/screenshot.png)
+### First Time Login:
+<img src="images/first_time_login.png" alt="First Time Login" width="520px">
+
+### Regular Login:
+<img src="images/login.png" alt="Login" width="400px">
+
+### Logout:
+<img src="images/logout.png" alt="Logout" width="170px">
+
 
 ## Installation
 
