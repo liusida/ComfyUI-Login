@@ -10,6 +10,6 @@ Repository = "https://github.com/liusida/ComfyUI-Login"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "liusida"
 DisplayName = "ComfyUI-Login"
 Icon = ""
