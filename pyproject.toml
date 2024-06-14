@@ -1,5 +1,5 @@
 [project]
-name = "comfyui-login"
+name = "login"
 description = "A simple password to protect ComfyUI."
 version = "1.0.0"
 license = "LICENSE"
@@ -11,5 +11,5 @@ Repository = "https://github.com/liusida/ComfyUI-Login"
 
 [tool.comfy]
 PublisherId = "liusida"
-DisplayName = "ComfyUI-Login"
+DisplayName = "Login"
 Icon = ""
