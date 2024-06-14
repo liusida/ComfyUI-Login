@@ -7,6 +7,12 @@ This custom node uses a simple password to protect ComfyUI.
 Please be aware that absolute security does not exist. This login node offers only basic
 protection for ComfyUI. Use it at your own risk.
 
+With that in mind, here is a freshly installed ComfyUI instance with ComfyUI-Login on a new Linux system with an RTX 4090 GPU:
+
+http://118.180.21.248:47743/login
+
+If you find a way to compromise it, please let me know. I'll address the issue and share the server with you.
+
 ## How to use
 
 ### First Time Login:
