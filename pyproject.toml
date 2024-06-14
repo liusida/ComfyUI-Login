@@ -12,4 +12,4 @@ Repository = "https://github.com/liusida/ComfyUI-Login"
 [tool.comfy]
 PublisherId = "liusida"
 DisplayName = "Login"
-Icon = ""
+Icon = "https://raw.githubusercontent.com/liusida/ComfyUI-Login/main/images/icon.png"
