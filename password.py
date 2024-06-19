@@ -176,7 +176,7 @@ async def process_request(request, handler):
 @web.middleware
 async def check_login_status(request: web.Request, handler):
     # Skip authentication for specific paths
-    if request.path == '/login' or request.path.endswith('.css') or request.path.endswith('.js'):
+    if request.path == '/login' or request.path.endswith('.css') or request.path.endswith('.js') or request.path.endswith('.ico'):
         return await handler(request)
 
     # Load the token if not already loaded
@@ -202,8 +202,12 @@ async def check_login_status(request: web.Request, handler):
         if request.query.get("token") == TOKEN:
             return await process_request(request, handler)
 
-    # Redirect to login if not authorized
-    raise web.HTTPFound('/login')
+    # unauthorized access
+    accept_header = request.headers.get('Accept', '')
+    if 'text/html' in accept_header:
+        raise web.HTTPFound('/login')
+    else:
+        return web.json_response({'error': 'Authentication required.'}, status=401)
 
 app.middlewares.append(check_login_status)
 
