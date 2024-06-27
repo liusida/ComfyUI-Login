@@ -98,7 +98,7 @@ This is handled purely in JavaScript. If you prefer not to use this feature, sim
 
 # Guest Mode (Working In Progress)
 
-If you place a `GUEST_MODE` file in the `./login/` folder alongside the `PASSWORD` file, you can activate the experimental `guest` mode on the login page. This mode allows anonymous guests to use your ComfyUI to generate images, but they won't be able to change any settings or install new custom nodes.
+If you place a `GUEST_MODE` file in the `./login/` folder alongside the `PASSWORD` file, you can activate the experimental `guest mode` on the login page. This mode allows anonymous guests to use your ComfyUI to generate images, but they won't be able to change any settings or install new custom nodes.
 
 <img src="images/guest_mode.png" width="213">
 
