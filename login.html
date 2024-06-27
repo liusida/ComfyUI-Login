@@ -13,6 +13,7 @@
         .comfy-modal .minor { font-style: italic; font-size: 13px; color: #777; }
         .comfy-modal label { color: white; padding: 5px; }
         .comfy-modal .title {background-color: black; font-size: 22px; color: white; padding: 5px;}
+        .guest-mode {background-color: #224422 !important;}
         #feedback { margin: 20px 10px; padding: 10px; border: 1px solid #666; background-color: #222; border-radius: 10px;}
     </style>
 </head>
@@ -40,7 +41,8 @@
             {% endif %}
         </div>
         <div>
-            <form action="/login" method="post">
+            <form action="/login" method="post" id="form_login">
+                <input type="hidden" id="guest_mode" name="guest_mode">
                 {% if first_time or prompt_for_username %}
                     <label>😸 Username:</label><input type="text" id="username" name="username" placeholder="Enter username" required><br>
                 {% endif %}
@@ -48,6 +50,9 @@
                 <label>🗝️ Password:</label><input type="password" id="password" name="password" placeholder="Enter password" required>
                 <br><br>
                 <input type="submit" value="Login" class="comfy-btn">
+                {% if guest_mode %}
+                <input type="button" value="Guest Mode" class="comfy-btn guest-mode" onclick="document.getElementById('guest_mode').value='1';document.getElementById('form_login').submit();">
+                {% endif %}
                 <br><br>
                 <a href="https://github.com/liusida/ComfyUI-Login/blob/main/locked_out.md" style="color:white; font-size:x-small" target="_blank">Locked Out?</a>
             </form>

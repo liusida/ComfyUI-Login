@@ -15,6 +15,7 @@ import logging
 node_dir = os.path.dirname(__file__)
 comfy_dir = os.path.dirname(folder_paths.__file__)
 password_path = os.path.join(comfy_dir, "login", "PASSWORD")
+guest_mode_path = os.path.join(comfy_dir, "login", "GUEST_MODE")
 secret_key_path = os.path.join(node_dir,'.secret-key.txt')
 login_html_path = os.path.join(node_dir, "login.html")
 KEY_AGE_LIMIT = timedelta(days=30)  # Key expiration period
@@ -96,13 +97,21 @@ async def get_root(request):
             # If there's no username but it's not the first time, prompt for username
             prompt_for_username = True
 
-        return web.Response(text=template.render(first_time=first_time, username=username, wrong_password=wrong_password, prompt_for_username=prompt_for_username), content_type='text/html')
+        guest_mode = os.path.exists(guest_mode_path)
+
+        return web.Response(text=template.render(first_time=first_time, username=username, wrong_password=wrong_password, prompt_for_username=prompt_for_username, guest_mode=guest_mode), content_type='text/html')
 
 @routes.post("/login")
 async def login_handler(request):
     data = await request.post()
     username_input = data.get('username')
     password_input = data.get('password').encode('utf-8')
+    guest_mode = data.get('guest_mode')=='1'
+
+    if guest_mode and os.path.exists(guest_mode_path):
+        session = await get_session(request)
+        session['guest_mode'] = True
+        return web.HTTPFound('/')
 
     if os.path.exists(password_path):
         # Existing user login attempt
@@ -140,10 +149,20 @@ async def login_handler(request):
 async def get_root(request):
     session = await get_session(request)
     session['logged_in'] = False
+    session['guest_mode'] = False
     session.pop('username', None)  # Clear the username
+    session.pop('guest_mode', None)  # Clear the username
     response = web.HTTPFound('/login')  # Redirect to the main page if the password is correct
     return response
 
+@routes.get("/guest_mode")
+async def get_guest_mode(request):
+    session = await get_session(request)
+    if 'guest_mode' in session and session['guest_mode']:
+        return web.json_response({'guestMode': True})
+    else:
+        return web.json_response({'guestMode': False})
+    
 def load_token():
     global TOKEN
     try:
@@ -176,7 +195,7 @@ async def process_request(request, handler):
 @web.middleware
 async def check_login_status(request: web.Request, handler):
     # Skip authentication for specific paths
-    if request.path == '/login' or request.path.endswith('.css') or request.path.endswith('.js') or request.path.endswith('.ico'):
+    if request.path == '/login' or request.path.endswith('.css') or request.path.endswith('.css.map') or request.path.endswith('.js') or request.path.endswith('.ico'):
         return await handler(request)
 
     # Load the token if not already loaded
@@ -188,6 +207,20 @@ async def check_login_status(request: web.Request, handler):
     if 'logged_in' in session and session['logged_in']:
         # User is logged in via session, proceed without checking tokens
         return await process_request(request, handler)
+
+    if 'guest_mode' in session and session['guest_mode']:
+        not_allowed_get_path = [
+        ]
+        allowed_post_path = [
+            '/prompt',
+            '/upload/image',
+        ]
+        if request.method=="GET" and not request.path in not_allowed_get_path:
+            return await process_request(request, handler)
+        elif request.method=="POST" and request.path in allowed_post_path:
+            return await process_request(request, handler)
+        else:
+            return web.json_response({})
 
     # Check the Authorization header for Bearer token
     if args.enable_cors_header is None or args.enable_cors_header == '*' or args.enable_cors_header == request.headers.get('Origin'):
