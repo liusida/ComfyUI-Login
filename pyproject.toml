@@ -2,7 +2,7 @@
 name = "login"
 description = "A simple password to protect ComfyUI."
 version = "1.0.0"
-license = "LICENSE"
+license = { file = "LICENSE" }
 dependencies = ["aiohttp", "aiohttp_session[secure]", "Jinja2", "bcrypt", "pycryptodome"]
 
 [project.urls]
